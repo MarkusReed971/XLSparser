@@ -24,7 +24,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         int workbookSize = openWorkbook(pathGL).getSheetAt(0).getLastRowNum();
         for (int i = 0; i < workbookSize; i++) {
-            //System.out.println(i);
             writeRow(correctRow(openSheet(openWorkbook(pathGL), 0).getRow(i), cellNums), i-EMPTY_ROW);
         }
         System.out.println("Rows: " + (workbookSize-EMPTY_ROW) + "\nComplete!");
@@ -37,44 +36,33 @@ public class Main {
             fileInputStream.close();
             return workbook;
         } catch (FileNotFoundException e) {
-            Workbook workbook = new HSSFWorkbook();
-            return workbook;
+            return new HSSFWorkbook();
         }
     }
 
     public static Sheet openSheet(Workbook workbook, int sheetNum) {
         try {
-            Sheet sheet = workbook.getSheetAt(sheetNum);
-            return  sheet;
+            return  workbook.getSheetAt(sheetNum);
         } catch (IllegalArgumentException e) {
-            Sheet sheet = workbook.createSheet("Sheet"+ sheetNum);
-            return sheet;
+            return workbook.createSheet("Sheet"+ sheetNum);
         }
     }
 
     public  static  boolean checkCell(Row row, int cellNum, CellType cellType) {
-        if (row.getCell(cellNum, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null &&
-                row.getCell(cellNum).getCellType().equals(cellType))
-            return true;
-        else
-            return false;
+        return row.getCell(cellNum, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null
+                && row.getCell(cellNum).getCellType().equals(cellType);
     }
 
     public  static boolean checkRow(Row row){
-        if (checkCell(row, cellNums[0], CellType.STRING) && (checkCell(row, cellNums[1], CellType.NUMERIC) || checkCell(row, cellNums[1], CellType.FORMULA)) &&
-                (checkCell(row, cellNums[2], CellType.NUMERIC) || checkCell(row, cellNums[2], CellType.FORMULA)))
-            return true;
-        else
-            return false;
+        return checkCell(row, cellNums[0], CellType.STRING) && (checkCell(row, cellNums[1], CellType.NUMERIC)
+                || checkCell(row, cellNums[1], CellType.FORMULA)) && (checkCell(row, cellNums[2], CellType.NUMERIC)
+                || checkCell(row, cellNums[2], CellType.FORMULA));
     }
 
     public static boolean matcherFound(String text, String patternText){
         Pattern pattern = Pattern.compile(patternText);
         Matcher matcher = pattern.matcher(text);
-        if(matcher.find())
-            return true;
-        else
-            return false;
+        return matcher.find();
     }
 
     public static void replaceSubstring(String text, String patternText) {
@@ -147,8 +135,7 @@ public class Main {
             name += " " + getCorrectSize(text) + ", ";
             name += (int)Math.round(cost);
 
-            MyRow myRow = new MyRow(name, amount, cost);
-            return myRow;
+            return new MyRow(name, amount, cost);
         } else {
             EMPTY_ROW++;
             return new MyRow();
