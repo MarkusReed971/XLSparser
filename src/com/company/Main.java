@@ -4,9 +4,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,9 +86,15 @@ public class Main {
         Matcher matcher = pattern.matcher(text);
         matcher.find();
         String name = matcher.group();
-        name = name.replace(",", " ");
-        name = name.replace(".", " ");
-        name = name.replace("-", " ");
+
+        char[] repSimbols = new char[] {',', '.', '-'};
+        for (int i = 0; i < repSimbols.length; i++) {
+            name = name.replace(repSimbols[i], ' ');
+        }
+//        name = name.replace(",", " ");
+//        name = name.replace(".", " ");
+//        name = name.replace("-", " ");
+
         name = name.substring(0,1).toUpperCase() + name.substring(1);
         return name;
     }
@@ -102,15 +106,19 @@ public class Main {
         while (matcher.find())
             temporary = text.substring(matcher.start(), matcher.end());
 
-        temporary = temporary.replace("р.", "");
-        temporary = temporary.replace("/", " ");
-        temporary = temporary.replace("-", " ");
-        temporary = temporary.replace("(", "");
-        temporary = temporary.replace(")", "");
-        temporary = temporary.replace("x", "*");
-        temporary = temporary.replace("X", "*");
-        temporary = temporary.replace("х", "*");
-        temporary = temporary.replace("Х", "*");
+        String[][] repSimbols = new String[][] {{"р.", ""}, {"/", " "}, {"-", " "}, {"(", ""}, {")", ""}, {"x", "*"}, {"X", "*"}, {"х", "*"}, {"Х", "*"}};
+        for (int i = 0; i < repSimbols.length; i++) {
+            temporary = temporary.replace(repSimbols[i][0], repSimbols[i][1]);
+        }
+//        temporary = temporary.replace("р.", "");
+//        temporary = temporary.replace("/", " ");
+//        temporary = temporary.replace("-", " ");
+//        temporary = temporary.replace("(", "");
+//        temporary = temporary.replace(")", "");
+//        temporary = temporary.replace("x", "*");
+//        temporary = temporary.replace("X", "*");
+//        temporary = temporary.replace("х", "*");
+//        temporary = temporary.replace("Х", "*");
 
         try {
             List<Integer> sizes = new ArrayList<>();
